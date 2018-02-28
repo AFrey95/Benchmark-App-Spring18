@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ud432l.benchmark.android.historicapp">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.NoActionBar">
+        <!-- Theme is set to AppCompat, will need to change here if theme is changed -->
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+            <!-- IMPORTANT: singleTask allows only instance of activity throughout life of app -->
+            <!-- IMPORTANT: portrait locks in the orientation regardless of user phone settings -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".FullscreenActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fullscreen"
+            android:noHistory="true"
+            android:theme="@style/FullscreenTheme" />
+            <!-- IMPORTANT: noHistory removes activity from call stack after activity exits -->
+        <activity
+            android:name=".QRActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="QRActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:theme="@style/FullscreenTheme" />
+            <!-- IMPORTANT: singleTask allows only instance of activity throughout life of app -->
+    </application>
+</manifest>

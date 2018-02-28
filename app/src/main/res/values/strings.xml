@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Benchmark LLC</string>
+    <string name="txtTitle">Flying History</string>
+    <string name="textBtnQR">Scan QR code</string>
+    <string name="textBtnFH">Flying History Website</string>
+    <string name="textBtnEOF">Evolution of Flight Website</string>
+    <string name="description0">Main Website Image</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="turn_on_flashlight">Turn On Flashlight</string>
+    <string name="turn_off_flashlight">Turn Off Flashlight</string>
+    <string name="FlyingHistoryLink">"flyinghistory.com/"</string>
+    <string name="EOFLink">"evolutionofflight.com/"</string>
+    <string name="QRPreview">Scanner Preview</string>
+    <string name="txtCompany">Benchmark LLC</string>
+</resources>

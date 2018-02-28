@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black_overlay">#232323</color>
+    <color name="zxing_custom_zoom_background">#a1232323</color>
+</resources>
