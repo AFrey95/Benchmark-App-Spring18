@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(MainActivity.this, FullscreenActivity.class);
                 String SiteURL = getResources().getString(R.string.FlyingHistoryLink);
                 i.putExtra("SiteURL", SiteURL);
-3333
+
                 // start a new activity with Intent i
                 startActivity(i);
             }
