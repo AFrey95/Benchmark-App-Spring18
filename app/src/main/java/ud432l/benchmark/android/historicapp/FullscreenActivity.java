@@ -19,30 +19,33 @@ public class FullscreenActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         /* Get SiteURL & PageURL from previous activity */
-        String SiteURL = null;
-        String PageURL = null;
+        String url = null;
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
         if(bundle != null){
-            SiteURL = (String) bundle.getSerializable("SiteURL");
-            PageURL = (String) bundle.getSerializable("PageURL");
+            url = (String) bundle.getSerializable("url");
         }
 
         /* Load the URL from SiteURL & PageURL */
         setContentView(R.layout.activity_fullscreen);
         view =(WebView) this.findViewById(R.id.webView);
-        if ((SiteURL != null) && (PageURL != null)) {
-            view.loadUrl("http://" + SiteURL + PageURL);
+        if (url != null && !(url.startsWith("http://") || url.startsWith("https://"))) {
+            url = "http://" + url;
+            view.loadUrl(url);
         }
-        else if ((SiteURL != null) && (PageURL == null)) {
-            view.loadUrl("http://" + SiteURL);
-        }
-        else
-        {
-            SiteURL = getResources().getString(R.string.EOFLink);
-            view.loadUrl("http://" + SiteURL);
-        }
+
+//        if ((url != null) && (PageURL != null)) {
+//            view.loadUrl("http://" + SiteURL + PageURL);
+//        }
+//        else if ((SiteURL != null) && (PageURL == null)) {
+//            view.loadUrl("http://" + SiteURL);
+//        }
+//        else
+//        {
+//            SiteURL = getResources().getString(R.string.EOFLink);
+//            view.loadUrl("http://" + SiteURL);
+//        }
 
         /* Clear the cache and set settings */
         view.clearCache(true);

@@ -35,5 +35,8 @@
             android:launchMode="singleTask"
             android:theme="@style/FullscreenTheme" />
             <!-- IMPORTANT: singleTask allows only instance of activity throughout life of app -->
+        <service
+            android:name=".SQLIntentService"
+            android:exported="false"/>
     </application>
 </manifest>
