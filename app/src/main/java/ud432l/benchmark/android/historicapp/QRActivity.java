@@ -1,9 +1,11 @@
 package ud432l.benchmark.android.historicapp;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -17,36 +19,44 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import java.util.List;
 
 public class QRActivity extends Activity implements DecoratedBarcodeView.TorchListener {
+    private static final String TAG = QRActivity.class.getSimpleName();
+    private static final int URL_REQUEST_CODE = 0;
 
     private CaptureManager capture;
     private DecoratedBarcodeView barcodeScannerView;
     private Button switchFlashlightButton;
-    private String lastText;
+//    private String qrcText;
 
     /* Create callback function for barcode scanning */
     private final BarcodeCallback callback = new BarcodeCallback() {
         @Override
         public void barcodeResult(BarcodeResult result) {
-            String SiteURL = null;
-            String PageURL;
-            Intent intent = getIntent();
-            Bundle bundle = intent.getExtras();
-            if( bundle != null ){
-                SiteURL = (String) bundle.getSerializable("SiteURL");
-            }
+//            String url = null;
+//            Intent intent = getIntent();
+//            Bundle bundle = intent.getExtras();
+//            if( bundle != null ){
+//                url = (String) bundle.getSerializable("url");
+//            }
 
             // Get URL from QR Code
-            lastText = result.getText();
-            PageURL = lastText;
+            String qrcText = result.getText();
+            Log.d(TAG, "Scanned code: '" + qrcText + "'");
+
+            //fetch url from SQL server
+            PendingIntent pendingResult = createPendingResult(
+                    URL_REQUEST_CODE, new Intent(), 0);
+            Intent intent = new Intent(getApplicationContext(), SQLIntentService.class);
+            intent.putExtra(SQLIntentService.QRC_EXTRA, qrcText);
+            intent.putExtra(SQLIntentService.PENDING_RESULT_EXTRA, pendingResult);
+            startService(intent);
 
             // DEBUGGING PURPOSES ONLY
             // barcodeScannerView.setStatusText(SiteURL + lastText);
 
             // Open site using SiteURL & PageURL
-            Intent i = new Intent(QRActivity.this, FullscreenActivity.class);
-            i.putExtra("SiteURL", SiteURL);
-            i.putExtra("PageURL", PageURL);
-            startActivity(i);
+//            Intent i = new Intent(QRActivity.this, FullscreenActivity.class);
+//            i.putExtra("url", url);
+//            startActivity(i);
 
             //Added preview of scanned barcode -- REMOVED SINCE ONLY USED FOR DEBUGGING
             //ImageView imageView = (ImageView) findViewById(R.id.barcodePreview);
@@ -58,6 +68,34 @@ public class QRActivity extends Activity implements DecoratedBarcodeView.TorchLi
 
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == URL_REQUEST_CODE) {
+        Log.d(TAG, "Received result. Parsing result code.");
+            switch (resultCode) {
+                case SQLIntentService.INVALID_URL_CODE:
+                    //handle invalid url
+                    break;
+                case SQLIntentService.ERROR_CODE:
+                    //handle error
+                    break;
+                case SQLIntentService.RESULT_CODE:
+                    openSite(data);
+                    break;
+            }
+            openSite(data);
+//        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void openSite(Intent data) {
+        Log.d(TAG, "Opening site...");
+        String url = data.getStringExtra(SQLIntentService.URL_RESULT_EXTRA);
+        Intent i = new Intent(QRActivity.this, FullscreenActivity.class);
+        i.putExtra("url", url);
+        startActivity(i);
+    }
 
     /* When activity is initially created */
     @Override
