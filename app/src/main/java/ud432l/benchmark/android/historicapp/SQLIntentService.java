@@ -75,26 +75,25 @@ public class SQLIntentService extends IntentService {
                     JSONArray jArray = new JSONArray(response);
                     JSONObject jObject = jArray.getJSONObject(0);
                     urlstr = jObject.getString("url");
-                    Log.d(TAG, "URL Recieved: '" + urlstr + "'");
+//                    Log.d(TAG, "URL Recieved: '" + urlstr + "'");
                 }
 
                 Intent result = new Intent();
                 result.putExtra(URL_RESULT_EXTRA, urlstr);
-                Log.d(TAG, "Sending back result");
+//                Log.d(TAG, "Sending back result");
                 reply.send(this, RESULT_CODE, result);
 
             } catch (MalformedURLException e) {
-                Log.e(TAG, "Error getting url", e);
+//                Log.e(TAG, "Error getting url", e);
                 reply.send(INVALID_URL_CODE);
             } catch (Exception e) {
-                Log.e(TAG, "Error getting url", e);
+//                Log.e(TAG, "Error getting url", e);
                 reply.send(ERROR_CODE);
             }
 
         } catch (PendingIntent.CanceledException c) {
-            Log.i(TAG, "reply cancelled", c);
+//            Log.i(TAG, "reply cancelled", c);
         }
-
     }
 
 }

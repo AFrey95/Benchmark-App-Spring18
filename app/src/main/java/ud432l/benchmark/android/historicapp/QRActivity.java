@@ -21,6 +21,8 @@ import java.util.List;
 public class QRActivity extends Activity implements DecoratedBarcodeView.TorchListener {
     private static final String TAG = QRActivity.class.getSimpleName();
     private static final int URL_REQUEST_CODE = 0;
+    private static boolean loading = false;
+    private static int count = 0;
 
     private CaptureManager capture;
     private DecoratedBarcodeView barcodeScannerView;
@@ -31,36 +33,26 @@ public class QRActivity extends Activity implements DecoratedBarcodeView.TorchLi
     private final BarcodeCallback callback = new BarcodeCallback() {
         @Override
         public void barcodeResult(BarcodeResult result) {
-//            String url = null;
-//            Intent intent = getIntent();
-//            Bundle bundle = intent.getExtras();
-//            if( bundle != null ){
-//                url = (String) bundle.getSerializable("url");
+//            if(count > 1) {
+//                count = 0;
+                // Get URL from QR Code
+                String qrcText = result.getText();
+
+//                Log.d(TAG, "Scanned code: '" + qrcText + "'");
+
+                //fetch url from SQL server
+                PendingIntent pendingResult = createPendingResult(
+                        URL_REQUEST_CODE, new Intent(), 0);
+                Intent intent = new Intent(QRActivity.this, SQLIntentService.class);
+                intent.putExtra(SQLIntentService.QRC_EXTRA, qrcText);
+                intent.putExtra(SQLIntentService.PENDING_RESULT_EXTRA, pendingResult);
+                loading = true;
+//                Log.d(TAG, "Starting SQLIntentService!");
+                startService(intent);
+//                return;
+//            } else {
+//                count++;
 //            }
-
-            // Get URL from QR Code
-            String qrcText = result.getText();
-            Log.d(TAG, "Scanned code: '" + qrcText + "'");
-
-            //fetch url from SQL server
-            PendingIntent pendingResult = createPendingResult(
-                    URL_REQUEST_CODE, new Intent(), 0);
-            Intent intent = new Intent(getApplicationContext(), SQLIntentService.class);
-            intent.putExtra(SQLIntentService.QRC_EXTRA, qrcText);
-            intent.putExtra(SQLIntentService.PENDING_RESULT_EXTRA, pendingResult);
-            startService(intent);
-
-            // DEBUGGING PURPOSES ONLY
-            // barcodeScannerView.setStatusText(SiteURL + lastText);
-
-            // Open site using SiteURL & PageURL
-//            Intent i = new Intent(QRActivity.this, FullscreenActivity.class);
-//            i.putExtra("url", url);
-//            startActivity(i);
-
-            //Added preview of scanned barcode -- REMOVED SINCE ONLY USED FOR DEBUGGING
-            //ImageView imageView = (ImageView) findViewById(R.id.barcodePreview);
-            //imageView.setImageBitmap(result.getBitmapWithResultPoints(Color.YELLOW));
         }
 
         @Override
@@ -71,29 +63,31 @@ public class QRActivity extends Activity implements DecoratedBarcodeView.TorchLi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == URL_REQUEST_CODE) {
-        Log.d(TAG, "Received result. Parsing result code.");
-            switch (resultCode) {
-                case SQLIntentService.INVALID_URL_CODE:
-                    //handle invalid url
-                    break;
-                case SQLIntentService.ERROR_CODE:
-                    //handle error
-                    break;
-                case SQLIntentService.RESULT_CODE:
-                    openSite(data);
-                    break;
-            }
-            openSite(data);
-//        }
         super.onActivityResult(requestCode, resultCode, data);
+//        Log.d(TAG, "Received result. Parsing result code.");
+        switch (resultCode) {
+            case SQLIntentService.INVALID_URL_CODE:
+                //handle invalid url
+                break;
+            case SQLIntentService.ERROR_CODE:
+                //handle error
+                break;
+            case SQLIntentService.RESULT_CODE:
+                openSite(data);
+                break;
+            default:
+//                Log.e(TAG, "No result code match.");
+                break;
+        }
+        return;
     }
 
     private void openSite(Intent data) {
-        Log.d(TAG, "Opening site...");
         String url = data.getStringExtra(SQLIntentService.URL_RESULT_EXTRA);
         Intent i = new Intent(QRActivity.this, FullscreenActivity.class);
         i.putExtra("url", url);
+//        Log.d(TAG, "Starting FullscreenActivity with url = " + url);
+//        loading = false;
         startActivity(i);
     }
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="catagories_array">
+
+        <item>Select a catagory</item>
+        <item>Faith Tradition</item>
+        <item>History of Flight</item>
+        <item>Music</item>
+        <item>World</item>
+
+    </string-array>
+</resources>

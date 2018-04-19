@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
@@ -12,40 +13,32 @@ import android.widget.Button;
 
 public class FullscreenActivity extends Activity {
     /* Global Variables */
+    private static final String TAG = FullscreenActivity.class.getSimpleName();
     private WebView view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        Log.d(TAG, "Activity started.");
         super.onCreate(savedInstanceState);
 
-        /* Get SiteURL & PageURL from previous activity */
+        /* Get url from previous Activity */
         String url = null;
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+        url = intent.getStringExtra("url");
+        if(url == null) {
+//            Log.e(TAG, "URL IS NULL");
+        } else {
+//            Log.d(TAG, "Received url " + url);
 
-        if(bundle != null){
-            url = (String) bundle.getSerializable("url");
-        }
-
-        /* Load the URL from SiteURL & PageURL */
-        setContentView(R.layout.activity_fullscreen);
-        view =(WebView) this.findViewById(R.id.webView);
-        if (url != null && !(url.startsWith("http://") || url.startsWith("https://"))) {
-            url = "http://" + url;
+            /* Load the URL from url */
+            setContentView(R.layout.activity_fullscreen);
+            view =(WebView) this.findViewById(R.id.webView);
+            if (!(url.startsWith("http://") || url.startsWith("https://"))) {
+                url = "http://" + url;
+            }
+//            Log.d(TAG, "Loading url " + url);
             view.loadUrl(url);
         }
-
-//        if ((url != null) && (PageURL != null)) {
-//            view.loadUrl("http://" + SiteURL + PageURL);
-//        }
-//        else if ((SiteURL != null) && (PageURL == null)) {
-//            view.loadUrl("http://" + SiteURL);
-//        }
-//        else
-//        {
-//            SiteURL = getResources().getString(R.string.EOFLink);
-//            view.loadUrl("http://" + SiteURL);
-//        }
 
         /* Clear the cache and set settings */
         view.clearCache(true);
@@ -69,12 +62,10 @@ public class FullscreenActivity extends Activity {
             @Override
             public void onClick(View v) {
                 /* Call QRActivity from here */
-                String SiteURL = getResources().getString(R.string.FlyingHistoryLink);
                 Intent i = new Intent(FullscreenActivity.this, QRActivity.class);
 
                 /* Set QR Code mode & pass along current SiteURL in this activity */
                 i.putExtra("SCAN_MODE", "QR_CODE_MODE");
-                i.putExtra("SiteURL", SiteURL);
 
                 /* Start the QR Activity */
                 startActivity(i);

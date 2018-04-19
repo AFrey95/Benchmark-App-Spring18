@@ -12,4 +12,5 @@
     <string name="EOFLink">"evolutionofflight.com/"</string>
     <string name="QRPreview">Scanner Preview</string>
     <string name="txtCompany">Benchmark LLC</string>
+    <string name="googleSiteLink">"sites.google.com/view/"</string>
 </resources>
