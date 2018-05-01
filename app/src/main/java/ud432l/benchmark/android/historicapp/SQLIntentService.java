@@ -1,3 +1,15 @@
+/*****************************************************************
+*
+* File: SQLIntentService.java
+* Authors: Andy Frey, Hassan Alnassan, Almuaayad AlMaskari
+* Date: 5/1/18
+*
+* This Service retrives a URL from a MySQL database by sending
+* and HTTP request to a PHP script. The services uses a POST
+* request.
+*
+*****************************************************************/
+
 package ud432l.benchmark.android.historicapp;
 
 import android.app.IntentService;
@@ -6,6 +18,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import org.json.JSONArray;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -17,11 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-
-
-/**
- * Created by andyf on 4/4/2018.
- */
 
 public class SQLIntentService extends IntentService {
 
@@ -75,7 +83,6 @@ public class SQLIntentService extends IntentService {
                     JSONArray jArray = new JSONArray(response);
                     JSONObject jObject = jArray.getJSONObject(0);
                     urlstr = jObject.getString("url");
-//                    Log.d(TAG, "URL Recieved: '" + urlstr + "'");
                 }
 
                 Intent result = new Intent();

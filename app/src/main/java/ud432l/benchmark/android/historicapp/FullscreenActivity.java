@@ -1,3 +1,16 @@
+/************************************************************************
+*
+* File: FullscreenActivity.java
+* Authors: Andy Frey, HassanAlnasser, Almuaayad Almaskari
+* Date: 5/1/18
+*
+* This Activity handles the Web View for viewing webpages. It loads a
+* fully qualified URL given in the Intent. If the URL does not begin
+* with "http://" or "https://" the Activity will prepend "http://"
+* before loading.
+*
+************************************************************************/
+
 package ud432l.benchmark.android.historicapp;
 
 import android.app.Activity;
@@ -18,7 +31,6 @@ public class FullscreenActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        Log.d(TAG, "Activity started.");
         super.onCreate(savedInstanceState);
 
         /* Get url from previous Activity */
@@ -26,9 +38,8 @@ public class FullscreenActivity extends Activity {
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
         if(url == null) {
-//            Log.e(TAG, "URL IS NULL");
+
         } else {
-//            Log.d(TAG, "Received url " + url);
 
             /* Load the URL from url */
             setContentView(R.layout.activity_fullscreen);
@@ -36,7 +47,8 @@ public class FullscreenActivity extends Activity {
             if (!(url.startsWith("http://") || url.startsWith("https://"))) {
                 url = "http://" + url;
             }
-//            Log.d(TAG, "Loading url " + url);
+
+			// Open the webview with the loaded URL.
             view.loadUrl(url);
         }
 

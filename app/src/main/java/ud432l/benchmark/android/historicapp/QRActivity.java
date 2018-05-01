@@ -1,3 +1,18 @@
+/***********************************************************************
+*
+* File: QRActivity.java
+* Authors: Andy Frey, Hassan Alnasser, Almuaayad AlMaskari
+* Date: 5/1/18
+*
+* This Activity handles the QR scanner screen. QRCs are interpreted
+* using the JourneyApps and ZXing libraries. When a QRC is scanned
+* the Activiy starts SQLIntentService to retrieve the corresponding
+* URL from the translation database. It then starts FullscreenActivity
+* with the URL received.
+*
+***********************************************************************/
+
+
 package ud432l.benchmark.android.historicapp;
 
 import android.app.Activity;
@@ -33,27 +48,18 @@ public class QRActivity extends Activity implements DecoratedBarcodeView.TorchLi
     private final BarcodeCallback callback = new BarcodeCallback() {
         @Override
         public void barcodeResult(BarcodeResult result) {
-//            if(count > 1) {
-//                count = 0;
-                // Get URL from QR Code
-                String qrcText = result.getText();
 
-//                Log.d(TAG, "Scanned code: '" + qrcText + "'");
+        	// Get URL from QR Code
+            String qrcText = result.getText();
 
-                //fetch url from SQL server
-                PendingIntent pendingResult = createPendingResult(
-                        URL_REQUEST_CODE, new Intent(), 0);
-                Intent intent = new Intent(QRActivity.this, SQLIntentService.class);
-                intent.putExtra(SQLIntentService.QRC_EXTRA, qrcText);
-                intent.putExtra(SQLIntentService.PENDING_RESULT_EXTRA, pendingResult);
-                loading = true;
-//                Log.d(TAG, "Starting SQLIntentService!");
-                startService(intent);
-//                return;
-//            } else {
-//                count++;
-//            }
-        }
+            PendingIntent pendingResult = createPendingResult(
+                    URL_REQUEST_CODE, new Intent(), 0);
+            Intent intent = new Intent(QRActivity.this, SQLIntentService.class);
+            intent.putExtra(SQLIntentService.QRC_EXTRA, qrcText);
+            intent.putExtra(SQLIntentService.PENDING_RESULT_EXTRA, pendingResult);
+            loading = true;=
+            startService(intent);
+		}
 
         @Override
         public void possibleResultPoints(List<ResultPoint> resultPoints) {
@@ -64,7 +70,6 @@ public class QRActivity extends Activity implements DecoratedBarcodeView.TorchLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        Log.d(TAG, "Received result. Parsing result code.");
         switch (resultCode) {
             case SQLIntentService.INVALID_URL_CODE:
                 //handle invalid url
@@ -82,12 +87,11 @@ public class QRActivity extends Activity implements DecoratedBarcodeView.TorchLi
         return;
     }
 
+	// Start the web view Activity
     private void openSite(Intent data) {
         String url = data.getStringExtra(SQLIntentService.URL_RESULT_EXTRA);
         Intent i = new Intent(QRActivity.this, FullscreenActivity.class);
         i.putExtra("url", url);
-//        Log.d(TAG, "Starting FullscreenActivity with url = " + url);
-//        loading = false;
         startActivity(i);
     }
 
